@@ -68,6 +68,10 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
 
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+
   //Wysyłka bezpośredniej wiadomosci do usera po identyfikatorze sesji
   socket.on('direct message', function (msg, socketid) {
     io.to(socketid).emit('some event', 'whatever');
