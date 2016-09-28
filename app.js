@@ -61,11 +61,19 @@ app.use(function(err, req, res, next) {
   });
 });*/
 
+var clients = {};
+
 io.on('connection', function(socket){
   console.log('a user connected', socket.id);
 
+  clients[socket.id] = socket;
+
+  for(var i in clients) {
+    console.log(i);
+  }
+
   socket.on('disconnect', function(){
-    console.log('user disconnected');
+    delete clients[socket.id];
   });
 
   socket.on('chat message', function(msg){
