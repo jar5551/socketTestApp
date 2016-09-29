@@ -8104,6 +8104,45 @@ h3 {
         height: 100%; }
         #chat .container .row [class^='col'].chat {
           background-color: #f4f4f4; }
+          #chat .container .row [class^='col'].chat #mainHeader {
+            font-size: 1.375em;
+            font-weight: 400;
+            padding-top: 1em;
+            display: block; }
+            #chat .container .row [class^='col'].chat #mainHeader span {
+              font-weight: 700; }
+          #chat .container .row [class^='col'].chat .messageBoxContainer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding-right: 15px; }
+            #chat .container .row [class^='col'].chat .messageBoxContainer .messageBox {
+              position: relative;
+              height: 400px;
+              width: 350px;
+              float: right;
+              padding-bottom: 60px;
+              background-color: #ffffff;
+              margin-right: 15px; }
+              #chat .container .row [class^='col'].chat .messageBoxContainer .messageBox header {
+                position: relative;
+                font-size: 1.125em;
+                background-color: #d9d9d9;
+                padding: 5px 10px;
+                font-weight: 700;
+                line-height: 2em; }
+                #chat .container .row [class^='col'].chat .messageBoxContainer .messageBox header .close:before {
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  bottom: 0;
+                  content: '✖'; }
+              #chat .container .row [class^='col'].chat .messageBoxContainer .messageBox #messageForm {
+                position: absolute;
+                right: 0;
+                bottom: 10px;
+                left: 0;
+                width: 100%; }
         #chat .container .row [class^='col'].users {
           background-color: #eaeaea; }
           #chat .container .row [class^='col'].users header {

@@ -5,8 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+//var routes = require('./routes/index');
+//var users = require('./routes/users');
 
 var app = express();
 var http = require('http').Server(app);
@@ -25,6 +25,7 @@ var io = require('socket.io')(http);
  app.use(express.static(path.join(__dirname, 'public')));*/
 
 app.use(express.static(__dirname + '/public'));
+
 //app.use('/', routes);
 //app.use('/users', users);
 
@@ -63,13 +64,15 @@ function getUsers() {
     return users;
 }
 
-function getUsersDataToDisplay() {
+function getUsersDataToDisplay(meSocketId) {
     var ret = {};
 
     Object.keys(users).forEach(function(key) {
-        ret[key] = {
-            username: users[key].getUsername()
-        };
+        if(meSocketId !== key) {
+            ret[key] = {
+                username: users[key].getUsername()
+            };
+        }
     });
     console.log(ret);
 
@@ -103,24 +106,12 @@ User.prototype.getUsername = function () {
 var users = {};
 
 io.on('connection', function (socket) {
-    function emmitUsers() {
-        socket.broadcast.emit('users', {
-            usersData: getUsersDataToDisplay()
-        });
-    }
-
-    function newUserAdded(socketId) {
-        socket.broadcast.emit('new user', {
-            username: users[socketId].getUsername(),
-            socketId: users[socketId].getSocketId()
-        });
-    }
+    var me = new User(socket);
 
     socket.on('disconnect', function () {
         delete users[socket.id];
-        //emmitUsers();
 
-        socket.broadcast.emit('remove user', {
+        io.emit('remove user', {
             socketId: socket.id
         });
     });
@@ -135,19 +126,22 @@ io.on('connection', function (socket) {
     });*/
 
     socket.on('login', function (data) {
+        if(!me) {
+            return;
+        }
+
         users[socket.id] = new User(socket);
         users[socket.id].setUsername(data.username);
 
-        io.to(socket.id).emit('users', {
-            usersData: getUsersDataToDisplay()
-        });
-
+        console.log(socket.id, me.getSocketId());
         socket.broadcast.emit('add user', {
             username: users[socket.id].getUsername(),
             socketId: users[socket.id].getSocketId()
         });
 
-
+        socket.emit('users', {
+            usersData: getUsersDataToDisplay(me.getSocketId())
+        });
     });
 
     socket.on('chat message', function (msg) {
@@ -159,7 +153,6 @@ io.on('connection', function (socket) {
         io.to(socketid).emit('some event', 'whatever');
     });
 
-    emmitUsers();
 });
 
 module.exports = app;

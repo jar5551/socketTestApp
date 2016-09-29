@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
 <head>
-    <title>Socket.IO chat</title>
+    <meta charset="UTF-8">
+    <title>Chat - socketTestApp - proof of concept</title>
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&subset=latin-ext" rel="stylesheet">
     <link rel="stylesheet" href="/styles/style.css">
 </head>
@@ -27,7 +28,34 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-10 chat">
-                chat
+                <hader id="mainHeader">
+                    Zalogowano jako <span></span>
+                </hader>
+
+                <div class="messageBoxContainer">
+                    <!--<div class="messageBox">
+                        <header>Andrzej</header>
+                        <ul id="messages">
+                            <li>
+                                From: message
+                            </li>
+                            <li>
+                                From: message
+                            </li>
+                            <li>
+                                From: message
+                            </li>
+                            <li>
+                                From: message
+                            </li>
+                        </ul>
+                        <form id="messageForm">
+                            <input id="m" class="form-control" autocomplete="off"/>
+                        </form>
+                    </div>-->
+                </div>
+
+
             </div>
             <div class="col-xs-2 users">
                 <header>
@@ -39,11 +67,7 @@
             </div>
         </div>
     </div>
-    <!--<ul id="messages"></ul>
-    <form action="">
-        <input id="m" autocomplete="off"/><input id="to" autocomplete="off" placeholder="to"/>
-        <button>Send</button>
-    </form>-->
+
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

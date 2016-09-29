@@ -116,6 +116,59 @@ h3 {
         &.chat {
           background-color: $cGrayLightLigter;
 
+          #mainHeader {
+            @include fontSize(22);
+            font-weight: 400;
+            padding-top: 1em;
+            display: block;
+
+            span {
+              font-weight: 700;
+
+            }
+          }
+
+          .messageBoxContainer {
+            @include position(absolute, null null 0 null);
+            width: 100%;
+            padding-right: 15px;
+
+            .messageBox {
+              @include position(relative);
+              height: 400px;
+              width: 350px;
+              float: right;
+              padding-bottom: 60px;
+              background-color: $cWhite;
+              margin-right: 15px;
+
+              header {
+                @include position(relative);
+                @include fontSize(18);
+                background-color: $cGray;
+                padding: 0px 10px;
+                font-weight: 700;
+                line-height: 2em;
+
+                .close {
+                  &:before {
+                    @include position(absolute, 0 0 0 null);
+                    content: '✖';
+                  }
+                }
+              }
+
+              #messageForm {
+                @include position(absolute, null 0 10px 0);
+                width: 100%;
+
+                input {
+
+                }
+              }
+            }
+          }
+
         }
 
         &.users {
