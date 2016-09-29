@@ -8070,15 +8070,15 @@ h3 {
   line-height: 2em;
   height: 2em; }
 
-#messages {
+.messages {
   list-style-type: none;
   margin: 0;
   padding: 0; }
 
-#messages li {
+.messages li {
   padding: 5px 10px; }
 
-#messages li:nth-child(odd) {
+.messages li:nth-child(odd) {
   background: #eee; }
 
 #welcome {
@@ -8128,7 +8128,7 @@ h3 {
                 position: relative;
                 font-size: 1.125em;
                 background-color: #d9d9d9;
-                padding: 5px 10px;
+                padding: 0px 10px;
                 font-weight: 700;
                 line-height: 2em; }
                 #chat .container .row [class^='col'].chat .messageBoxContainer .messageBox header .close:before {
@@ -8137,7 +8137,7 @@ h3 {
                   right: 0;
                   bottom: 0;
                   content: '✖'; }
-              #chat .container .row [class^='col'].chat .messageBoxContainer .messageBox #messageForm {
+              #chat .container .row [class^='col'].chat .messageBoxContainer .messageBox .messageForm {
                 position: absolute;
                 right: 0;
                 bottom: 10px;

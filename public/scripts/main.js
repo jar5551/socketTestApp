@@ -1,4 +1,9 @@
 
+var config = {
+    messageBoxPrefix : 'message_',
+    socketIdPrefix: '/#'
+};
+
 var User = function () {
     this.connected = false;
     this.username = '';
@@ -51,23 +56,20 @@ User.prototype.isConnected = function () {
 };
 
 Message.prototype.openWindow = function (id) {
-    if($('#message_' + id).length > 0) {
+    console.log(id);
+    if($('#' + config.messageBoxPrefix + id).length > 0) {
         this.focusOnMessage();
         return;
     }
 
-    var user = users['/#' + id];
+    var user = users[config.socketIdPrefix + id];
 
-    //console.log(user.getName());
-    //console.log(this.getRecipient());
-
-    $('.messageBoxContainer').append('<div id="message_' + id + '" class="messageBox">' +
+    $('.messageBoxContainer').append('<div id="' + config.messageBoxPrefix + id + '" class="messageBox">' +
         '<header>' + user.getUsername() + '<span class="close"></span></header>' +
-        '<ul id="messages">' +
-        '<li>From: message</li><li>From: message</li><li>From: message</li><li>From: message</li>' +
+        '<ul class="messages">' +
         '</ul>' +
-        '<form id="messageForm">' +
-        '<input id="m" class="form-control" autocomplete="off"/>' +
+        '<form class="messageForm">' +
+        '<input class="form-control" autocomplete="off"/>' +
         '</form><' +
         '/div>');
 
@@ -79,7 +81,7 @@ Message.prototype.getMessages = function () {
 };
 
 Message.prototype.setRecipient = function (recipient) {
-    this.recipient = '/#' + recipient;
+    this.recipient = config.socketIdPrefix + recipient;
 };
 
 Message.prototype.getRecipient = function () {
@@ -87,7 +89,19 @@ Message.prototype.getRecipient = function () {
 };
 
 Message.prototype.focusOnMessage = function () {
-    $('#message_' + this.getRecipient().slice(2)).find('input').focus();
+    $('#' + config.messageBoxPrefix + this.getRecipient().slice(2)).find('input').focus();
+};
+
+Message.prototype.send = function (message) {
+    socket.emit('message sent', {message: message, recipient: this.getRecipient()});
+
+    this.addMessage(message);
+};
+
+Message.prototype.addMessage = function (message) {
+    var id = this.getRecipient().slice(2);
+
+    $('#' + config.messageBoxPrefix + id).find('.messages').append($('<li>').text(message));
 };
 
 var commonMethods = {
@@ -159,6 +173,23 @@ $(document).on('click', '#chat .users ul li .close', function(event){
     event.preventDefault();
 });
 
+$(document).on('submit', '.messageForm', function(event){
+    var id = $(this).parent('.messageBox').attr('id').replace(config.messageBoxPrefix, '');
+    var input = $(this).find('input');
+    var msg = input.val();
+    console.log(id, msg, messages[id]);
+
+
+    try {
+        messages[id].send(msg);
+    } catch (error) {
+        commonMethods.showErrorMsg(error)
+    }
+
+    input.val('');
+    event.preventDefault();
+});
+
 /*$('form').submit(function () {
 
  if ($('#to').val() !== '') {
@@ -174,13 +205,6 @@ $(document).on('click', '#chat .users ul li .close', function(event){
 //SOCKET STUFF
 var socket = io();
 
-socket.on('some event', function (msg) {
-    $('#messages').append($('<li>').text(msg));
-});
-
-socket.on('chat message', function (msg) {
-    $('#messages').append($('<li>PUBLIC: ').text(msg));
-});
 
 socket.on('users', function (data) {
     console.log('users', data.usersData);
@@ -216,6 +240,19 @@ socket.on('remove user', function (data) {
     delete users[data.socketId];
 
     $('#' + data.socketId.slice(2)).remove();
+});
+
+socket.on('message', function (msg) {
+    console.log(msg);
+    var message = msg.message;
+    var recipient = msg.recipient;
+    var id = recipient.slice(2);
+
+    if(!messages[id]) {
+        messages[id] = new Message(id);
+    }
+
+    messages[id].addMessage(message);
 });
 
 var me = new User();

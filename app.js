@@ -148,9 +148,13 @@ io.on('connection', function (socket) {
         io.emit('chat message', msg);
     });
 
+    socket.on('message sent', function (data) {
+        socket.broadcast.to(data.recipient).emit('message', {message: data.message, recipient: socket.id});
+    });
+
     //Wysyłka bezpośredniej wiadomosci do usera po identyfikatorze sesji
     socket.on('direct message', function (msg, socketid) {
-        io.to(socketid).emit('some event', 'whatever');
+        socket.broadcast.to(socketid).emit('message', msg);
     });
 
 });
