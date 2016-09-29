@@ -1,0 +1,186 @@
+//@import "compass/css3";
+@import "bourbon/bourbon";
+@import "bootstrap";
+@import "animatecss";
+
+$fontSize: 16px;
+
+//COLORS
+$cWhite: #ffffff;
+$cBlack: #000000;
+$cGrayLightLigter: #f4f4f4;
+$cGrayLight: #eaeaea;
+$cGray: #d9d9d9;
+$cRed: #eb3320;
+
+@mixin fontSize($_fSize) {
+  font-size: em($_fSize, $fontSize);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Lato', sans-serif;
+  font-size: $fontSize;
+  font-weight: 300;
+}
+
+a {
+  color: #00B7FF;
+}
+
+h3 {
+  @include fontSize(30);
+  font-weight: 300;
+}
+
+.centeredContainer {
+  height: 100%;
+  min-height: 100%;
+  white-space: nowrap;
+  position: relative;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+
+  .centered {
+    @include position(relative);
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    white-space: normal;
+    margin-left: -5px;
+  }
+}
+
+.form-control {
+  @include fontSize(20);
+  @include border-top-radius(0);
+  @include border-bottom-radius(0);
+  line-height: 2em;
+  height: 2em;
+}
+
+
+#messages {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#messages li {
+  padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+  background: #eee;
+}
+
+#welcome {
+  @include position(fixed, 0 0 0 0);
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  z-index: 1;
+
+}
+
+#chat {
+  height: 100%;
+
+  .container {
+    height: 100%;
+    width: 100%;
+
+    .row {
+      height: 100%;
+
+      [class^='col'] {
+        height: 100%;
+
+        &.chat {
+          background-color: $cGrayLightLigter;
+
+        }
+
+        &.users {
+          background-color: $cGrayLight;
+
+          header {
+            padding-top: 2em;
+            font-weight: 700;
+          }
+
+          ul {
+            @include fontSize(16);
+            display: block;
+            margin: 0;
+            padding: .5em 0 0;
+
+            li {
+              display: block;
+              margin: .1em 0;
+              padding: 0;
+
+              a {
+                @include position(relative);
+                display: block;
+                color: $cBlack;
+                cursor: pointer;
+                height: 2em;
+                line-height: 2em;
+                text-decoration: none;
+
+                &:after {
+                  @include transition(all 400ms ease);
+                  @include transform-origin(left top);
+                  @include transform(scale(0, 1));
+                  @include position(absolute, 0 -15px 0 -15px);
+                  background-color: $cGray;
+                  content: '';
+                }
+
+                span {
+                  @include position(relative);
+                  z-index: 1;
+                }
+
+                &:hover, &.active {
+                  &:after {
+                    @include transform(scale(1, 1));
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#errorMsg {
+  @include position(fixed, null 0 0 0);
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  background-color: $cRed;
+  color: $cWhite;
+  z-index: 99;
+  text-align: center;
+}
