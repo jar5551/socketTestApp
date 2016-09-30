@@ -1,4 +1,3 @@
-
 var config = {
     messageBoxPrefix : 'message_',
     socketIdPrefix: '/#'
@@ -93,6 +92,11 @@ Message.prototype.focusOnMessage = function () {
 };
 
 Message.prototype.send = function (message) {
+
+    if(!me.isConnected()) {
+        throw 'Aby wysłać wiadomość trzeba być zalogowanym';
+    }
+
     socket.emit('message sent', {message: message, recipient: this.getRecipient()});
 
     this.addMessage(message);
@@ -141,6 +145,7 @@ var elements = {
 };
 
 elements.$chat.hide();
+
 
 //CLICKS EVENTS
 

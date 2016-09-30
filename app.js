@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var MongoClient = require('mongodb').MongoClient;
 
 //var routes = require('./routes/index');
 //var users = require('./routes/users');
@@ -59,6 +60,23 @@ app.use(express.static(__dirname + '/public'));
  error: {}
  });
  });*/
+//pass: IPx1AYAoNJSqyR603N0d
+var db;
+
+MongoClient.connect('mongodb://mongo7.mydevil.net/mo1086_socketTA', function(err, database) {
+    if (err) {
+        throw err;
+    }
+
+    db = database;
+
+    db.authenticate('mo1086_socketTA', 'IPx1AYAoNJSqyR603N0d', function (err, res) {
+        if (err) {
+            throw err;
+        }
+        console.log(res);
+    });
+});
 
 function getUsers() {
     return users;
@@ -83,6 +101,9 @@ function getNumberOfUsers() {
     return Object.keys(users).length;
 }
 
+
+//User classs
+
 var User = function (socket) {
     this.setSocket(socket);
 };
@@ -101,6 +122,25 @@ User.prototype.setUsername = function (username) {
 
 User.prototype.getUsername = function () {
     return this.username;
+};
+
+
+//Message classs
+
+var Message = function () {
+
+};
+
+Message.prototype.addMessage = function (socketId, message) {
+    db.collection('messages').insertOne( {
+        socketId: socketId,
+        message: message
+    }, function(err, result) {
+        if (err) {
+            throw err;
+        }
+        console.log(result);
+    });
 };
 
 var users = {};
@@ -133,7 +173,6 @@ io.on('connection', function (socket) {
         users[socket.id] = new User(socket);
         users[socket.id].setUsername(data.username);
 
-        console.log(socket.id, me.getSocketId());
         socket.broadcast.emit('add user', {
             username: users[socket.id].getUsername(),
             socketId: users[socket.id].getSocketId()
@@ -149,6 +188,9 @@ io.on('connection', function (socket) {
     });
 
     socket.on('message sent', function (data) {
+        var messsage = new Message();
+        messsage.addMessage(socket.id, data.message);
+
         socket.broadcast.to(data.recipient).emit('message', {message: data.message, recipient: socket.id});
     });
 
@@ -156,7 +198,6 @@ io.on('connection', function (socket) {
     socket.on('direct message', function (msg, socketid) {
         socket.broadcast.to(socketid).emit('message', msg);
     });
-
 });
 
 module.exports = app;
